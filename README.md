@@ -13,7 +13,7 @@ It also provides explainable insights using SHAP and an interactive dashboard fo
 * SHAP-based explainability (feature impact)
 * Interactive dashboard using HTML and Chart.js
 * FastAPI backend for real-time predictions
-* Feature engineering (tenure groups, spending behavior)
+* Feature engineering (tenure, spending behavior)
 
 ---
 
@@ -25,7 +25,7 @@ It also provides explainable insights using SHAP and an interactive dashboard fo
 
 Training implementation:
 
-* `train.py` 
+* `train.py`
 
 ---
 
@@ -43,7 +43,7 @@ Training implementation:
 
 ## Project Structure
 
-```
+```text
 customer-churn-prediction
 ├── app.py
 ├── train.py
@@ -51,46 +51,55 @@ customer-churn-prediction
 │   └── Churn.csv
 ├── static/
 │   └── churn.html
-├── artifacts/
-│   ├── best_model.joblib
-│   └── metadata.json
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## How to Run
+## Setup Instructions
 
 ### 1. Install dependencies
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Train the model
+---
 
-```
+### 2. Generate model files (IMPORTANT)
+
+Before running the API, you must generate model files:
+
+```bash
 python train.py --data data/Churn.csv
 ```
 
+This will create:
+
+```text
+artifacts/
+├── best_model.joblib
+├── metadata.json
+```
+
+---
+
 ### 3. Run the API server
 
-```
+```bash
 uvicorn app:app --reload
 ```
 
+---
+
 ### 4. Open dashboard
 
-Open the file in your browser:
+Open this file in your browser:
 
-```
+```text
 static/churn.html
 ```
-
-Dashboard file:
-
-* `churn.html` 
 
 ---
 
@@ -98,13 +107,9 @@ Dashboard file:
 
 POST request:
 
-```
+```text
 http://127.0.0.1:8000/predict
 ```
-
-Backend implementation:
-
-* `app.py` 
 
 ---
 
@@ -117,7 +122,14 @@ Backend implementation:
 
 ---
 
+## Notes
+
+* The `artifacts/` folder is generated automatically and is not included in the repository.
+* Make sure to run the training step before starting the API.
+
+---
+
 ## Author
 
-Dhruv Vats,Navoshma Mittal
+Navoshma Mittal,Dhruv Vats
 BTech CSE, UPES
