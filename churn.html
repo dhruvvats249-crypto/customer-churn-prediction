@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Customer Churn Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b1220;
+  color: white;
+}
+
+.main {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: flex-start;
+}
+
+/* LEFT */
+.left {
+  width: 38%;
+}
+
+/* RIGHT */
+.right {
+  width: 62%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: #020617;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+/* INPUT */
+label {
+  display: block;
+  margin-top: 10px;
+  color: #cbd5f5;
+}
+
+select, input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #020617;
+  color: white;
+}
+
+/* STEPPER */
+.stepper {
+  display: flex;
+}
+
+.stepper button {
+  width: 40px;
+  border: none;
+  background: #020617;
+  color: white;
+  cursor: pointer;
+}
+
+/* BUTTON */
+.main-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  background: #2563eb;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* CHART FIX */
+#pieChart {
+  width: 280px !important;
+  height: 280px !important;
+  margin: auto;
+}
+
+#shapChart {
+  height: 260px !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+<!-- LEFT SIDE -->
+<div class="left">
+<div class="card">
+
+<h2>Customer Input</h2>
+
+<label>Gender</label>
+<select id="gender"><option>Male</option><option>Female</option></select>
+
+<label>SeniorCitizen</label>
+<div class="stepper">
+<button onclick="changeValue('SeniorCitizen',-1)">-</button>
+<input id="SeniorCitizen" value="0">
+<button onclick="changeValue('SeniorCitizen',1)">+</button>
+</div>
+
+<label>Partner</label>
+<select id="Partner"><option>No</option><option>Yes</option></select>
+
+<label>Dependents</label>
+<select id="Dependents"><option>No</option><option>Yes</option></select>
+
+<label>Tenure</label>
+<div class="stepper">
+<button onclick="changeValue('tenure',-1)">-</button>
+<input id="tenure" value="35">
+<button onclick="changeValue('tenure',1)">+</button>
+</div>
+
+<label>PhoneService</label>
+<select id="PhoneService"><option>Yes</option><option>No</option></select>
+
+<label>MultipleLines</label>
+<select id="MultipleLines">
+<option>No</option>
+<option>Yes</option>
+<option>No phone service</option>
+</select>
+
+<label>InternetService</label>
+<select id="InternetService">
+<option>DSL</option>
+<option>Fiber optic</option>
+<option>No</option>
+</select>
+
+<label>OnlineSecurity</label>
+<select id="OnlineSecurity">
+<option>No</option>
+<option>Yes</option>
+<option>No internet service</option>
+</select>
+
+<label>OnlineBackup</label>
+<select id="OnlineBackup">
+<option>No</option>
+<option>Yes</option>
+<option>No internet service</option>
+</select>
+
+<label>DeviceProtection</label>
+<select id="DeviceProtection">
+<option>No</option>
+<option>Yes</option>
+<option>No internet service</option>
+</select>
+
+<label>TechSupport</label>
+<select id="TechSupport">
+<option>No</option>
+<option>Yes</option>
+<option>No internet service</option>
+</select>
+
+<label>StreamingTV</label>
+<select id="StreamingTV">
+<option>No</option>
+<option>Yes</option>
+<option>No internet service</option>
+</select>
+
+<label>StreamingMovies</label>
+<select id="StreamingMovies">
+<option>No</option>
+<option>Yes</option>
+<option>No internet service</option>
+</select>
+
+<label>Contract</label>
+<select id="Contract">
+<option>Month-to-month</option>
+<option>One year</option>
+<option>Two year</option>
+</select>
+
+<label>PaperlessBilling</label>
+<select id="PaperlessBilling">
+<option>Yes</option>
+<option>No</option>
+</select>
+
+<label>PaymentMethod</label>
+<select id="PaymentMethod">
+<option>Electronic check</option>
+<option>Mailed check</option>
+<option>Bank transfer (automatic)</option>
+<option>Credit card (automatic)</option>
+</select>
+
+<label>MonthlyCharges</label>
+<div class="stepper">
+<button onclick="changeValue('MonthlyCharges',-1)">-</button>
+<input id="MonthlyCharges" value="49.20">
+<button onclick="changeValue('MonthlyCharges',1)">+</button>
+</div>
+
+<label>TotalCharges</label>
+<div class="stepper">
+<button onclick="changeValue('TotalCharges',-1)">-</button>
+<input id="TotalCharges" value="1701.65">
+<button onclick="changeValue('TotalCharges',1)">+</button>
+</div>
+
+<button class="main-btn" onclick="predict()">Predict</button>
+
+</div>
+</div>
+
+<!-- RIGHT SIDE -->
+<div class="right">
+
+<!-- RESULT + PIE -->
+<div class="card">
+<h3 id="result"></h3>
+<canvas id="pieChart"></canvas>
+</div>
+
+<!-- EXPLANATION -->
+<div class="card">
+<h3>Explanation</h3>
+<p id="finalExplain"></p>
+<ul id="explainList"></ul>
+</div>
+
+<!-- SHAP -->
+<div class="card">
+<h3>Feature Impact</h3>
+<canvas id="shapChart"></canvas>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+// Stepper
+function changeValue(id, step){
+let input = document.getElementById(id);
+let val = parseFloat(input.value) || 0;
+val += step;
+if(val < 0) val = 0;
+input.value = val.toFixed(2);
+}
+
+// Predict
+function predict(){
+
+const data={
+gender:gender.value,
+SeniorCitizen:Number(SeniorCitizen.value),
+Partner:Partner.value,
+Dependents:Dependents.value,
+tenure:Number(tenure.value),
+PhoneService:PhoneService.value,
+MultipleLines:MultipleLines.value,
+InternetService:InternetService.value,
+OnlineSecurity:OnlineSecurity.value,
+OnlineBackup:OnlineBackup.value,
+DeviceProtection:DeviceProtection.value,
+TechSupport:TechSupport.value,
+StreamingTV:StreamingTV.value,
+StreamingMovies:StreamingMovies.value,
+Contract:Contract.value,
+PaperlessBilling:PaperlessBilling.value,
+PaymentMethod:PaymentMethod.value,
+MonthlyCharges:Number(MonthlyCharges.value),
+TotalCharges:Number(TotalCharges.value)
+};
+
+fetch("http://127.0.0.1:8000/predict",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+.then(res=>res.json())
+.then(r=>{
+
+// Result
+document.getElementById("result").innerText =
+"Prediction: " + r.prediction +
+" | Risk: " + (r.churn_probability*100).toFixed(2) + "%";
+
+// PIE
+const ctx1 = document.getElementById("pieChart").getContext("2d");
+if(window.pie) window.pie.destroy();
+
+window.pie = new Chart(ctx1,{
+type:"pie",
+data:{
+labels:["Stay","Churn"],
+datasets:[{
+data:[r.stay_probability, r.churn_probability],
+backgroundColor:["green","red"]
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+plugins:{
+legend:{ position:"top" }
+}
+}
+});
+
+// SHAP
+const features = r.shap.map(x=>x.feature);
+const impacts = r.shap.map(x=>x.impact);
+
+const ctx2 = document.getElementById("shapChart").getContext("2d");
+if(window.bar) window.bar.destroy();
+
+window.bar = new Chart(ctx2,{
+type:"bar",
+data:{
+labels:features,
+datasets:[{
+label:"Impact",
+data:impacts
+}]
+}
+});
+
+// Explanation sentence
+let summary = r.prediction === "Stay"
+? "Customer is not likely to churn due to stable usage and long tenure."
+: "Customer is likely to churn due to high charges and short contract.";
+
+document.getElementById("finalExplain").innerText = summary;
+
+// Bullet points
+const list = document.getElementById("explainList");
+list.innerHTML="";
+
+r.shap.slice(0,5).forEach(item=>{
+let li = document.createElement("li");
+let direction = item.impact > 0 ? "increases churn" : "reduces churn";
+li.innerText = item.feature + " -> " + direction;
+list.appendChild(li);
+});
+
+});
+}
+
+</script>
+
+</body>
+</html>
