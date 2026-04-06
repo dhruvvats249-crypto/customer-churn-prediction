@@ -1,101 +1,123 @@
-#  Customer Churn Prediction
+# Customer Churn Prediction
 
-##  Problem
+## Project Overview
 
-Businesses lose customers (churn), which affects revenue.
-This project predicts whether a customer will leave or stay using machine learning techniques.
-
----
-
-##  Model Used
-
-* Random Forest Classifier
-* SMOTE & SMOTE-Tomek (for handling class imbalance)
+This project predicts whether a customer will churn (leave) or stay using Machine Learning.
+It also provides explainable insights using SHAP and an interactive dashboard for visualization.
 
 ---
 
-##  Dataset
+## Features
+
+* Customer churn prediction using a trained ML model
+* SHAP-based explainability (feature impact)
+* Interactive dashboard using HTML and Chart.js
+* FastAPI backend for real-time predictions
+* Feature engineering (tenure groups, spending behavior)
+
+---
+
+## Model Details
+
+* Algorithm: Random Forest
+* Imbalance Handling: SMOTE / SMOTETomek
+* Pipeline: Preprocessing + Model
+
+Training implementation:
+
+* `train.py` 
+
+---
+
+## Dataset
 
 * Telco Customer Churn Dataset
-* Features include: tenure, services, monthly charges, total charges, etc.
+* Includes:
+
+  * Customer tenure
+  * Services used
+  * Monthly and total charges
+  * Contract type
 
 ---
 
-##  Model Optimization
+## Project Structure
 
-* Compared multiple imbalance strategies:
-
-  * No balancing
-  * SMOTE
-  * SMOTE-Tomek
-* Automatically selected the best model based on:
-
-  * F1 Score
-  * Recall
-  * ROC-AUC
-
----
-
-##  Results (Best Model)
-
-* Accuracy: 0.79
-* Precision: 0.64
-* Recall: 0.59
-* F1 Score: 0.60
-* ROC-AUC: 0.84
-
----
-
-##  Tech Stack
-
-* Python
-* Pandas
-* NumPy
-* Scikit-learn
-* Imbalanced-learn
-* Streamlit
-
----
-
-##  How to Run
-
-```bash
-pip install -r requirements.txt
-python train.py --data Churn.csv
-streamlit run app.py
+```
+customer-churn-prediction
+├── app.py
+├── train.py
+├── data/
+│   └── Churn.csv
+├── static/
+│   └── churn.html
+├── artifacts/
+│   ├── best_model.joblib
+│   └── metadata.json
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-##  Output
+## How to Run
 
-* Best trained model saved using Joblib
-* Comparison results saved as CSV
-* Evaluation report generated automatically
-* Feature names and metadata stored
+### 1. Install dependencies
+
+```
+pip install -r requirements.txt
+```
+
+### 2. Train the model
+
+```
+python train.py --data data/Churn.csv
+```
+
+### 3. Run the API server
+
+```
+uvicorn app:app --reload
+```
+
+### 4. Open dashboard
+
+Open the file in your browser:
+
+```
+static/churn.html
+```
+
+Dashboard file:
+
+* `churn.html` 
 
 ---
 
-##  Key Features
+## API Endpoint
 
-* End-to-end ML pipeline
-* Handles missing data and feature engineering
-* Supports categorical encoding and preprocessing
-* Automatically selects best strategy
-* Deployable using Streamlit
+POST request:
 
----
+```
+http://127.0.0.1:8000/predict
+```
 
-##  Future Improvements
+Backend implementation:
 
-* Add SHAP for explainable AI
-* Improve accuracy using XGBoost / Deep Learning
-* Deploy on cloud (AWS / Render / Hugging Face)
+* `app.py` 
 
 ---
 
-##  Author
+## Output
 
-Navoshma Mittal
-Dhruv Vats
-BTech CSE | Data Science Enthusiast
+* Prediction: Churn or Stay
+* Probability scores
+* Feature impact (SHAP values)
+* Human-readable explanation
+
+---
+
+## Author
+
+Dhruv Vats,Navoshma Mittal
+BTech CSE, UPES
